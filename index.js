@@ -1,10 +1,11 @@
 const express = require('express');
-const sqlite3 = require('sqlite3');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
-const port = 9011;
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('port', process.env.PORT || 5000);
 // Create a SQLite database
 const db = new sqlite3.Database('users1.db');
 
@@ -120,7 +121,6 @@ app.post('/rent', (req, res) => {
         res.sendFile(path.join(__dirname, "public", 'index.html'));
     });
 });
-app.listen(port, () => {
-    console.log(`
-Server is running at http://localhost:${port}`);
-});
+app.listen(app.get('port'), function() {
+    console.log("Node app is running at localhost:" + app.get('port'))
+})

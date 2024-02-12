@@ -1,14 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
+
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.set('port', process.env.PORT || 5000);
-// Create a SQLite database
-const db = new sqlite3.Database('users1.db');
 
+const db = new sqlite3.Database('users1.db');
 
 db.run(`
 CREATE TABLE IF NOT EXISTS users(
@@ -24,7 +25,8 @@ CREATE TABLE IF NOT EXISTS submissions(
     name TEXT,
     contact_no TEXT,
     address TEXT,
-    message TEXT)
+    message TEXT
+)
 `);
 
 db.run(`
@@ -39,21 +41,17 @@ CREATE TABLE IF NOT EXISTS rentinfo(
     additional_comments TEXT
 )
 `);
-app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static('public'));
-// Serve HTML form for signup
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'index.html'));
 });
 
-
 app.post('/submit', (req, res) => {
-    const { Name, 'Contact no': contactNo, Adress: address, Message: message } = req.body;
+    const { Name, 'Contact no': contactNo, Address: address, Message: message } = req.body;
 
     db.run(`
-INSERT INTO submissions(name, contact_no, address, message) VALUES( ? , ? , ? , ? )
-`, [Name, contactNo, address, message], (err) => {
+        INSERT INTO submissions(name, contact_no, address, message) VALUES(?, ?, ?, ?)
+    `, [Name, contactNo, address, message], (err) => {
         if (err) {
             console.error(err.message);
             res.status(500).send('Internal Server Error');
@@ -62,16 +60,13 @@ INSERT INTO submissions(name, contact_no, address, message) VALUES( ? , ? , ? , 
         }
     });
 });
-// Serve HTML form for signup
+
 app.get('/signup', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'signup.html'));
 });
 
-// Handle signup form submission
 app.post('/signup', (req, res) => {
     const { username, password } = req.body;
-
-    // Insert user into the database
     db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, password], (err) => {
         if (err) {
             return res.status(500).send('Error creating user');
@@ -84,14 +79,9 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'login.html'));
 });
 
-app.get('/chat', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", 'Chat.html'));
-});
-// Handle login form submission
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    // Check if user exists in the database
     db.get('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], (err, row) => {
         if (err) {
             return res.status(500).send('Error checking user');
@@ -105,22 +95,23 @@ app.post('/login', (req, res) => {
     });
 });
 
-
 app.get('/rent', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'rentinfo.html'));
 });
+
 app.post('/rent', (req, res) => {
     const { name, email, phone, date, time, tool_name, additional_comments } = req.body;
 
-    // Insert user into the database
-    db.run('INSERT INTO rentinfo (name, email, phone, date, time, tool_name, additional_comments) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, email, phone, date, time, tool_name, additional_comments], (err, row) => {
-
+    db.run('INSERT INTO rentinfo (name, email, phone, date, time, tool_name, additional_comments) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, email, phone, date, time, tool_name, additional_comments], (err) => {
         if (err) {
-            res.sendFile(path.join(__dirname, "public", 'index.html'));
+            console.error(err.message);
+            return res.status(500).send('Error submitting rent information');
         }
         res.sendFile(path.join(__dirname, "public", 'index.html'));
     });
 });
-app.listen(app.get('port'), function() {
-    console.log("Node app is running at localhost:" + app.get('port'))
-})
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+    console.log(`Node app is running at localhost:${port}`);
+});

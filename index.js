@@ -67,9 +67,39 @@ app.get('/chat', (req, res) => {
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'login.html'));
 });
+// Handle login form submission
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Check if user exists in the database
+    db.get('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], (err, row) => {
+        if (err) {
+            return res.status(500).send('Error checking user');
+        }
+
+        if (row) {
+            res.sendFile(path.join(__dirname, "public", 'index.html'));
+        } else {
+            res.send('Invalid username or password');
+        }
+    });
+});
 
 app.get('/signup', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'signup.html'));
+});
+
+// Handle signup form submission
+app.post('/signup', (req, res) => {
+    const { username, password } = req.body;
+
+    // Insert user into the database
+    db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, password], (err) => {
+        if (err) {
+            return res.status(500).send('Error creating user');
+        }
+        res.sendFile(path.join(__dirname, "public", 'login.html'));
+    });
 });
 
 app.listen(app.get('port'), function() {

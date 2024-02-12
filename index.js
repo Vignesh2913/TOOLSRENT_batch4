@@ -19,6 +19,14 @@ app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'Chat.html'));
 })
 
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, "public", 'login.html'));
+});
+
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, "public", 'signup.html'));
+});
+
 app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'))
 })

@@ -102,6 +102,22 @@ app.post('/signup', (req, res) => {
     });
 });
 
+app.get('/rent', (req, res) => {
+    res.sendFile(path.join(__dirname, "public", 'rentinfo.html'));
+});
+app.post('/rent', (req, res) => {
+    const { name, email, phone, date, time, tool_name, additional_comments } = req.body;
+
+    // Insert user into the database
+    db.run('INSERT INTO rentinfo (name, email, phone, date, time, tool_name, additional_comments) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, email, phone, date, time, tool_name, additional_comments], (err, row) => {
+
+        if (err) {
+            res.sendFile(path.join(__dirname, "public", 'index.html'));
+        }
+        res.sendFile(path.join(__dirname, "public", 'index.html'));
+    });
+});
+
 app.listen(app.get('port'), function() {
     console.log("Node app is running at localhost:" + app.get('port'))
 })

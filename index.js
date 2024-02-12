@@ -1,4 +1,5 @@
 const express = require('express');
+const sqlite3 = require('sqlite3');
 const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
@@ -8,12 +9,56 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('port', process.env.PORT || 5000);
 
 // Routes
+const db = new sqlite3.Database('users1.db');
 
+db.run(`
+CREATE TABLE IF NOT EXISTS users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    password TEXT
+)
+`);
+
+db.run(`
+CREATE TABLE IF NOT EXISTS submissions(
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    contact_no TEXT,
+    address TEXT,
+    message TEXT)
+`);
+
+db.run(`
+CREATE TABLE IF NOT EXISTS rentinfo(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
+    tool_name TEXT NOT NULL,
+    additional_comments TEXT
+)
+`);
+app.use(bodyParser.urlencoded({ extended: true }));
 // Home page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
+app.post('/submit', (req, res) => {
+    const { Name, 'Contact no': contactNo, Adress: address, Message: message } = req.body;
 
+    db.run(`
+INSERT INTO submissions(name, contact_no, address, message) VALUES( ? , ? , ? , ? )
+`, [Name, contactNo, address, message], (err) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Internal Server Error');
+        } else {
+            res.send('Form submitted successfully!');
+        }
+    });
+});
 
 app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, "public", 'Chat.html'));

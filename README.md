@@ -40,3 +40,13 @@ Set up Azure Monitor for monitoring application performance.
 ## Usage
 Visit the deployed application URL.
 Browse available tools, rent them, and manage rentals.
+
+
+![Screenshot 2024-02-15 114407](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/2776e6a4-5073-4c47-972e-e218fec099b7)
+![Screenshot 2024-02-15 114443](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/bd1c9792-471f-4688-a791-c495c5a0c467)
+![Screenshot 2024-02-15 114513](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/f72ff26b-a334-4f81-822a-8ebce9dbcdee)
+![Screenshot 2024-02-15 114534](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/5b39373d-fab8-427a-8084-c96e55f7f5e8)
+![Screenshot 2024-02-15 114552](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/30b4857c-7d2b-41b6-8a44-054dcbadeba9)
+![Screenshot 2024-02-15 114609](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/11fbef29-589f-42b8-a520-8b7aae4b51e9)
+![Screenshot 2024-02-15 114635](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/763750d3-1cc7-4114-a1f7-446022a5ad8d)
+![Screenshot 2024-02-15 114655](https://github.com/Vignesh2913/TOOLSRENT_batch4/assets/153826969/e11ddb51-aafc-43a4-bcd4-c2e1f5f9fc26)
